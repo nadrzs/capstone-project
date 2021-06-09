@@ -14,7 +14,7 @@ let model;
 $( document ).ready(async function () {
 	$('.progress-bar').show();
     console.log( "Loading model..." );
-    model = await tf.loadLayersModel('http://127.0.0.1:8887/model/model.json');
+    model = await tf.loadLayersModel('https://capstone-project-315306.et.r.appspot.com/model/model.json');
     console.log( "Model loaded." );
 	$('.progress-bar').hide();
 });
@@ -41,6 +41,7 @@ $("#predict-button").click(async function () {
 		}).slice(0, 2);
 
 	$("#prediction-list").empty();
+	console.log(top5[0].className);
 	top5.forEach(function (p) {
 		$("#prediction-list").append(`<li>${p.className}: ${p.probability.toFixed(6)}</li>`);
 		});
