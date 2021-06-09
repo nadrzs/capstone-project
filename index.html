@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+			integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar navbar-expand-md backgroud-navbar">
+        <img src="./assets/logo-ready.png" width="50">
+        <a class="navbar-brand" href="/index.html">Ailiv.id Food Classifier and Nutrients</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-12">
+            <div class="progress progress-bar py-3 progress-bar-striped progress-bar-animated mb-2 loading-progress-bar">Loading Model</div>
+        </div>
+        <div class="col-12">
+            <div class="progress progress-bar py-3 progress-bar-striped progress-bar-animated mb-2 predicting-progress-bar">Predicting food</div>
+        </div>
+    </div>
+    <div class="container">
+        <div  class="webcam">
+            <div class="form">
+                <h1>Let's Begin</h1>
+                <form action="">
+                    <label for="gender">
+                        <input type="radio" name="gender" value="Male" id="male">
+                        <label for="male">Male</label>
+                        <input type="radio" name="gender" value="Female" id="female">
+                        <label for="female">Female</label>
+                        <br>
+                        <hr>
+                        <label for="usia">Umur :</label>
+                        <input type="text" name="usia" class="pl-2" id="usia" placeholder="umur anda">
+                        <p id="ageWarning" class="d-none text-danger"><small>rentang umur harus 19 sampai 64tahun!</small></p>
+                    </label>
+                </form>
+            </div>
+            <div class="buttons">
+                <img src="" width="300" id="selected-image" alt="">
+                <input id="image-selector" class="form-control border-0" type="file">
+                <button id="predict-button" class="btn-predict">Predict</button>            
+            </div>
+        </div>
+        <div id="result" class="result">
+            <div id="gizi" class="gizi-card">
+                <div class="result-gizi-card">
+                    <h2 class="namaMakanan"></h2>
+                    <div id="kalori" class="category">
+                        <p>kalori : </p>
+                        <p class="kalori-value">-</p>
+                    </div>
+                    <div id="Karbohidrat" class="category">
+                        <p>Karbohidrat : </p>
+                        <p class="karbohidrat-value">-</p>
+                    </div>
+                    <div id="lemak" class="category">
+                        <p>Lemak : </p>
+                        <p class="lemak-value">-</p>
+                    </div>
+                    <div id="protein" class="category">
+                        <p>protein : </p>
+                        <p class="protein-value">-</p>
+                    </div>
+                    <div id="kolesterol" class="category">
+                        <p>kolesterol : </p>
+                        <p class="kolesterol-value">-</p>
+                    </div>
+                    <div id="Sodium" class="category">
+                        <p>Sodium : </p>
+                        <p class="sodium-value">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="warning" class="warning-card hidden">
+        <h2 class="mt-5 pt-3">⚠⚠ WARNING!! ⚠⚠</h2>
+        <div class="warning-container mb-3">
+            <div id="card_lemak" class="card m-2 p-4 d-none">
+                <h2 class="title">Lemak</h2>
+                <p class="content">Konsumsi lemak berlebih dapat berisiko meningkatkan kadar LDL yang berperan membawa kolesterol ke pembuluh darah koroner. Pembuluh darah koroner akan mengalami penyempitan (atherosclerosis) dan dalam keadaan tertentu akan menyebabkan serangan jantung dan stroke. Maka dari itu sesuai makanan yang anda konsumsi hari ini, maka di anjurkan untuk mengurangi makanan dengan lemak yang melampaui batas</p>
+
+                <div class="source">
+                    <p>source :</p>
+                    <a href="https://dinkes.kulonprogokab.go.id/detil/181/penyakit-jantung-koroner">Endapan Lemak</a>
+                </div>
+            </div>
+            <div id="card_karbohidrat" class="card m-2 p-4 d-none">
+                <h2 class="title">Karbohidrat</h2>
+                <p class="content">Anda telah mengonsumsi karbohidrat secara berlebih. Konsumsi makanan tinggi karbohidrat dapat menyebabkan peningkatan pembentukan asetil-KoA dari proses dekarboksilasi fosforilasi dan meningkatkan pembentukan kolesterol serta trigliserida yang merupakan faktor risiko terjadinya penyakit jantung koroner. Sesuai makanan yang anda konsumsi hari ini, disarankan untuk mengurangi makanan dengan tinggi karbohidrat</p>
+
+                <div class="source">
+                    <p>source :</p>
+                    <a href="https://ejournal3.undip.ac.id/index.php/medico/article/view/18627#:~:text=Abstract-,Latar%20Belakang%3A%20Konsumsi%20makanan%20tinggi%20karbohidrat%20dapat%20menyebabkan%20peningkatan%20pembentukan,risiko%20terjadinya%20penyakit%20jantung%20koroner.">Jurnal Karbohidrat</a>
+                </div>
+            </div>
+            <div id="card_kalori" class="card m-2 p-4 d-none">
+                <h2 class="title">Kalori</h2>
+                <p class="content">Anda kelebihan dalam mengoonsumsi kalori hari ini. Kalori dan kolesterol memiliki hubungan yang erat, sedangkan konsumsi kolesterol berlebih dapat meningkatkan resiko penyakit jantung. Maka dari itu untuk kedepannya anda disarankan untuk mengontrol lebih lagi terhadap konsumsi kalori.</p>
+
+                <div class="source">
+                    <p>source :</p>
+                    <a href="https://www.klikdokter.com/tanya-dokter/read/2708512/kalori-dan-kolesterol">Bahaya kalori berlebih</a>
+                </div>
+            </div>
+            <div id="card_kolesterol" class="card m-2 p-4 d-none">
+                <h2 class="title">Kolesterol</h2>
+                <p class="content">Anda hari ini mengonsumsi kolesterol melebihi ambang batas. Saat ada terlalu banyak kolesterol dalam darah, maka ia akan menumpuk di dinding arteri. Hal ini kemudian menyebabkan proses yang disebut aterosklerosis, suatu bentuk penyakit jantung. Arteri menjadi menyempit dan aliran darah ke otot jantung melambat atau tersumbat. Darah yang membawa oksigen ke jantung, dan jika tidak ada cukup darah dan oksigen mencapai jantung, maka kamu akan merasakan efeknya langsung yakni nyeri dada. Kemudian, saat suplai darah ke sebagian jantung terputus sama sekali oleh penyumbatan, maka kamu akan mengalami serangan jantung. Maka dari itu anda perlu mengontrolnya untuk kedepannya</p>
+
+                <div class="source">
+                    <p>source :</p>
+                    <a href="https://www.halodoc.com/artikel/ini-pengaruh-kolesterol-pada-kesehatan-jantung">Mengapa kolesterol berbahaya?</a>
+                </div>
+            </div>
+            <div id="card_sodium" class="card m-2 p-4 d-none">
+                <h2 class="title">Sodium</h2>
+                <p class="content">Anda mengonsumsi sodium berlebih pada hari ini. Konsumsi sodium berlebih Akan meningkatkan jumlah natrium dalam sel dan mengganggu keseimbangan cairan. Masuknya cairan ke dalam sel akan mengecilkan diameter pembuluh darah arteri sehingga jantung harus memompa darah lebih kuat yang berakibat meningkatnya tekanan darah. Peningkatan tekanan darah berpengaruh pada peningkatan kerja jantung, yang akhirnya akan meningkatkan risiko mengalami serangan jantung dan stroke. Anda di anjurkan untuk mengontrol konsumsi sodium untuk kedepannya</p>
+
+                <div class="source">
+                    <p>source :</p>
+                    <a href="http://www.p2ptm.kemkes.go.id/infographic-p2ptm/hipertensi-penyakit-jantung-dan-pembuluh-darah/page/34/apa-pengaruh-konsumsi-garam-berlebih-terhadap-penyakit-tidak-menular">Bahaya sodium berlebih dalam tubuh</a>
+                </div>
+            </div>
+            <div id="card_protein" class="card m-2 p-4 d-none">
+                <h2 class="title">Protein</h2>
+                <p class="content">Anda kelebihan dalam mengoonsumsi protein hari ini. Konsumsi protein berlebih dapat meningkatkan resiko penyakit jantung dan pembuluh darah, Hal ini dikaitkan dengan asupan lemak jenuh dan kolesterol yang lebih tinggi. Maka dari itu untuk kedepannya anda disarankan untuk mengontrol lebih lagi terhadap konsumsi protein.</p>
+
+                <div class="source">
+                    <p>source :</p>
+                    <a href="https://www.halodoc.com/artikel/ini-dampak-kelebihan-protein-bagi-tubuh">Dampak kelebihan protein</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="target_classes.js"></script>
+	<script src="./newAPI.js"></script>
+</body>
+</html>
